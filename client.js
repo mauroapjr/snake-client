@@ -11,11 +11,11 @@ const connect = function () {
   conn.on("connect", function () {
     console.log("Welcome to the game!");
     conn.write("Name: MAP");
+    conn.write("Move: up");
+    // //setInterval(() => {
+    //   conn.write("Move: up");
+    // }, 2000);
   });
-
-  // process.stdin.on('Name: SNK', function(message){
-  //   conn.write("Name: ___");
-  // });
 
   conn.setEncoding("utf8");
 
