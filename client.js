@@ -1,4 +1,3 @@
-const { Server } = require("http");
 const net = require("net");
 const server = net.createServer();
 
@@ -8,20 +7,22 @@ const connect = function () {
     port: 50541,
   });
 
+  conn.on("error", function (data) {
+    console.log("erro", data);
+  });
+
   conn.on("connect", function () {
     console.log("Welcome to the game!");
     conn.write("Name: MAP");
     conn.write("Move: up");
-    // //setInterval(() => {
-    //   conn.write("Move: up");
-    // }, 2000);
+    
   });
 
   conn.setEncoding("utf8");
 
   return conn;
-};
 
-console.log("Connecting ...");
+  
+};
 
 module.exports = connect;
