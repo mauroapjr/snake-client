@@ -1,35 +1,64 @@
-const { connect } = require("./client");
-const connection = connect();
+const { UPKEY, LEFTKEY, DOWNKEY, RIGHTKEY } = require('./constants.js');
 
+let connection;
 
-const setupInput = function () {
+const msg = "Say: ";
+const hello = "Hello there!";
+const stay = "Stay a while...";
+const listen = "...and listen!";
+
+const setupInput = function(conn) {
+  connection = conn;
   const stdin = process.stdin;
   stdin.setRawMode(true);
-  stdin.setEncoding("utf8");
+  stdin.setEncoding('utf8');
   stdin.resume();
-  
-
-  const handleUserInput = function (key) {
-    if (key === "\u0003") process.exit();
-    if (key === "w") {
-      connection.write("Move: up");
-    }
-    if (key === "s") {
-      connection.write("Move: down");
-    }
-    if (key === "a") {
-      connection.write("Move: left");
-    }
-    if (key === "d") {
-      connection.write("Move: right");
-    }
-    if (key === "y") connection.write("Say: Sup!");
-    if (key === "u") connection.write("Say: War!");
-    if (key === "i") connection.write("Say: Battle?");
-    prevKey = key;
-  };
-  stdin.on("data", handleUserInput);
+  stdin.on('data', key => {
+    handleUserInput(key);
+  });
   return stdin;
 };
 
+let func;
+
+const handleUserInput = (key) => {
+  const stdout = process.stdout;
+  const interval = function(key) {
+    func = setInterval(() => {
+      connection.write(key);
+    }, 100);
+  };
+  if (key === '\u0003') {
+    stdout.write("Exited snake game.\n");
+    process.exit();
+  }
+  if (key === 'w') {
+    clearInterval(func);
+    interval(UPKEY);
+  }
+  if (key === 'a') {
+    clearInterval(func);
+    interval(LEFTKEY);
+  }
+  if (key === 's') {
+    clearInterval(func);
+    interval(DOWNKEY);
+  }
+  if (key === 'd') {
+    clearInterval(func);
+    interval(RIGHTKEY);
+  }
+  if (key === "h") {
+    connection.write(msg + hello);
+  }
+  if (key === "j") {
+    connection.write(msg + stay);
+  }
+  if (key === 'k') {
+    connection.write(msg + listen);
+  }
+};
+
 module.exports = { setupInput };
+
+
